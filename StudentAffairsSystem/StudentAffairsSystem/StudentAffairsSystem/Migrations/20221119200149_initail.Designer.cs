@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace StudentAffairsSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221119190142_initail")]
+    [Migration("20221119200149_initail")]
     partial class initail
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

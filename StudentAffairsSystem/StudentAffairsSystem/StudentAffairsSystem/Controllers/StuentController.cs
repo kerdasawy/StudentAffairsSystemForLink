@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using StudentAffairsSystem.Helpers;
 using StudentAffairsSystem.ViewModels;
 
+using System;
 using System.Linq;
 
 namespace StudentAffairsSystem.Controllers
@@ -57,16 +58,16 @@ namespace StudentAffairsSystem.Controllers
 
             return StudentList(-1, -1,null);
         }
-        [HttpGet("StudentList/{pageNumber:int}/{pageSize:int}/{nameFilter:string}")]
+        [HttpGet("StudentList/{pageNumber:int}/{pageSize:int}/{classNameFilter:string}")]
 
-        public IActionResult StudentList(int pageNumber, int pageSize, string nameFilter)
+        public IActionResult StudentList(int pageNumber, int pageSize, string classNameFilter =null)
         {
             IQueryable<Student> StudentQuery = null; ;
-            if (nameFilter != null)
-                StudentQuery = this._unitOfWork.Stuents.Find(x => x.Name.Contains(nameFilter));
+            if (classNameFilter != null)
+                StudentQuery = this._unitOfWork.Stuents.Find(x => !x.IsDeleted& x.Class.Name == classNameFilter);
             else
             {
-                StudentQuery = this._unitOfWork.Stuents.Find(x=>true);
+                StudentQuery = this._unitOfWork.Stuents.Find(x=>!x.IsDeleted);
             }
             if (pageNumber > 0 && pageSize > 0)
             {
@@ -83,5 +84,21 @@ namespace StudentAffairsSystem.Controllers
             return Ok(StudentList);
         }
 
+        [HttpGet("Delete/{StudentId:Guid}")]
+        public IActionResult StudentList(Guid StudentId)
+        {
+           var student =  this._unitOfWork.Stuents.Find(x=>x.Id == StudentId).FirstOrDefault();
+
+            if (student != null && !student.IsDeleted) { 
+                student.IsDeleted = true; 
+            
+            return Ok(StudentId);
+            
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
