@@ -80,5 +80,6 @@ namespace DAL.Models
         public bool IsDeleted { get; set; }
         public string DeletedBy { get; set; }
         public DateTime DeletedDate { get; set; }
+        
     }
 }

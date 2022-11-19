@@ -14,6 +14,9 @@ namespace DAL.Models
 {
     public class AuditableEntity : IAuditableEntity
     {
+         
+        public Guid Id { get; set; }= Guid.NewGuid();
+
         [MaxLength(256)]
         public string CreatedBy { get; set; }
         [MaxLength(256)]
@@ -25,4 +28,6 @@ namespace DAL.Models
         public string DeletedBy { get; set; }
         public DateTime DeletedDate { get; set; }
     }
+
+
 }

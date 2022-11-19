@@ -30,5 +30,4 @@ namespace DAL.Repositories.Interfaces
         TEntity Get(int id);
         IEnumerable<TEntity> GetAll();
     }
-
 }
