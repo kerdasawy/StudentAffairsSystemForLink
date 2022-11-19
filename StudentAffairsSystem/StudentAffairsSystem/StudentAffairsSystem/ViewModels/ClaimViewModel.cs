@@ -3,7 +3,10 @@
 // www.ebenmonney.com/templates
 // =============================
 
-using System;
+using DAL.Core;
+using DAL.Models;
+
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace StudentAffairsSystem.ViewModels
