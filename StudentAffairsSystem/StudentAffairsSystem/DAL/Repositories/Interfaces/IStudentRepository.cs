@@ -3,9 +3,11 @@
 // www.ebenmonney.com/templates
 // =============================
 
+using DAL.Models;
+
 namespace DAL.Repositories.Interfaces
 {
-    public interface IStudentRepository
+    public interface IStudentRepository : IRepository<Student>
     {
         
     }

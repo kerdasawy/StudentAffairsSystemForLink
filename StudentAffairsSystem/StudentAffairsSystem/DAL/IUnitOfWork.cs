@@ -15,8 +15,10 @@ namespace DAL
 {
     public interface IUnitOfWork
     {
-      
 
+
+        IStudentRepository Stuents { get;   }
+        IClassRepository Classes { get; }
 
         int SaveChanges();
     }

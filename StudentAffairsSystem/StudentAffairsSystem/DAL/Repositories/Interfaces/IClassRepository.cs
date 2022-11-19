@@ -3,7 +3,9 @@
 // www.ebenmonney.com/templates
 // =============================
 
+using DAL.Models;
+
 namespace DAL.Repositories.Interfaces
 {
-    public interface IClassRepository { }
+    public interface IClassRepository : IRepository<Class> { }
 }

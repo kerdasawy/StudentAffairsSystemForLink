@@ -18,8 +18,9 @@ namespace DAL
     {
         readonly ApplicationDbContext _context;
 
-        //ICustomerRepository _customers;
-     
+        IStudentRepository _stuents;
+        IClassRepository _classes;
+
 
 
         public UnitOfWork(ApplicationDbContext context)
@@ -29,20 +30,30 @@ namespace DAL
 
 
 
-        //public ICustomerRepository Customers
-        //{
-        //    get
-        //    {
-        //        if (_customers == null)
-        //            _customers = new CustomerRepository(_context);
+        public IStudentRepository Stuents
+        {
+            get
+            {
+                if (_stuents == null)
+                    _stuents = new StudentRepository(_context);
 
-        //        return _customers;
-        //    }
-        //}
+                return _stuents;
+            }
+        }
+        public IClassRepository Classes
+        {
+            get
+            {
+                if (_classes == null)
+                    _classes = new ClassRepository(_context);
+
+                return _classes;
+            }
+        }
 
 
 
-       
+
 
 
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
-    public class ClassRepository : Repository<Student>, IClassRepository
+    public class ClassRepository : Repository<Class>, IClassRepository
     {
         public ClassRepository(DbContext context) : base(context)
         { }
