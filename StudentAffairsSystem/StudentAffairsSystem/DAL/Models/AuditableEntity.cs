@@ -20,5 +20,9 @@ namespace DAL.Models
         public string UpdatedBy { get; set; }
         public DateTime UpdatedDate { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool IsDeleted { get; set; }=false;
+        [MaxLength(256)]
+        public string DeletedBy { get; set; }
+        public DateTime DeletedDate { get; set; }
     }
 }

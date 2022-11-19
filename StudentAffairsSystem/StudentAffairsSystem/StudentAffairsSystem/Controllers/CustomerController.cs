@@ -40,12 +40,12 @@ namespace StudentAffairsSystem.Controllers
 
 
         // GET: api/values
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var allCustomers = _unitOfWork.Customers.GetAllCustomersData();
-            return Ok(_mapper.Map<IEnumerable<CustomerViewModel>>(allCustomers));
-        }
+        //[HttpGet]
+        //public IActionResult Get()
+        //{
+        //    var allCustomers = _unitOfWork.Customers.GetAllCustomersData();
+        //    return Ok(_mapper.Map<IEnumerable<CustomerViewModel>>(allCustomers));
+        //}
 
 
 

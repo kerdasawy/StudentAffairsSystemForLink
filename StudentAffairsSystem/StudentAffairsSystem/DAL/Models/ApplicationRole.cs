@@ -77,5 +77,8 @@ namespace DAL.Models
         /// Navigation property for claims in this role.
         /// </summary>
         public virtual ICollection<IdentityRoleClaim<string>> Claims { get; set; }
+        public bool IsDeleted { get; set; }
+        public string DeletedBy { get; set; }
+        public DateTime DeletedDate { get; set; }
     }
 }

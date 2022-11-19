@@ -41,7 +41,9 @@ namespace DAL.Models
         public string UpdatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-
+        public bool IsDeleted { get; set; }
+        public string DeletedBy { get; set; }
+        public DateTime DeletedDate { get; set; }
 
 
         /// <summary>
@@ -53,10 +55,6 @@ namespace DAL.Models
         /// Navigation property for the claims this user possesses.
         /// </summary>
         public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; }
-
-        /// <summary>
-        /// Demo Navigation property for orders this user has processed
-        /// </summary>
-        public ICollection<Order> Orders { get; set; }
+        
     }
 }
