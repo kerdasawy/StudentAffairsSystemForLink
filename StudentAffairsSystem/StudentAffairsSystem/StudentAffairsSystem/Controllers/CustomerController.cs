@@ -49,11 +49,11 @@ namespace StudentAffairsSystem.Controllers
 
 
 
-        [HttpGet("throw")]
-        public IEnumerable<CustomerViewModel> Throw()
-        {
-            throw new InvalidOperationException("This is a test exception: " + DateTime.Now);
-        }
+        //[HttpGet("throw")]
+        //public IEnumerable<CustomerViewModel> Throw()
+        //{
+        //    throw new InvalidOperationException("This is a test exception: " + DateTime.Now);
+        //}
 
 
 
