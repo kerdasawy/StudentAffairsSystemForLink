@@ -51,8 +51,8 @@ namespace DAL
 
             #region Student Affairs System
 
-            builder.Entity<Class>().HasKey(c => c.ClassId);
-            builder.Entity<Student>().HasKey(s => s.StudnetId);
+            builder.Entity<Class>().HasKey(c => c.Id);
+            builder.Entity<Student>().HasKey(s => s.Id);
             builder.Entity<Student>().HasOne(s => s.Class).WithMany(c=>c.Students).HasForeignKey(s=>s.ClassId).OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Student>().Navigation(s => s.Class).AutoInclude();
 

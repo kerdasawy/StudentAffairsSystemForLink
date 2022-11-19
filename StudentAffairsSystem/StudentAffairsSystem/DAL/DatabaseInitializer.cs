@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Bogus;
 namespace DAL
 {
     public interface IDatabaseInitializer
@@ -104,139 +104,46 @@ namespace DAL
 
         private async Task SeedDemoDataAsync()
         {
-            //if (!await _context.Customers.AnyAsync() && !await _context.ProductCategories.AnyAsync())
-            //{
-            //    _logger.LogInformation("Seeding demo data");
+           
 
-            //    Customer cust_1 = new Customer
-            //    {
-            //        Name = "Ebenezer Monney",
-            //        Email = "contact@ebenmonney.com",
-            //        Gender = Gender.Male,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
+            if (_context.Studnets.Count()==0)
+            {
+                _logger.LogInformation("Seeding demo data");
+                //Add Classes
+                List<Class> classes = new List<Class>();
+                for (Char i = 'A'; i < 'Z'; i++)
+                {
+                    var className = (i).ToString();
+                    Class classItem = new Class() { Id = Guid.NewGuid(), Name = className };
+                    _context.Classes.Add(classItem);
+                    classes.Add(classItem);
+                }
+                //Add Students
+                for (int j = 0; j < 100; j++)
+                {
+                    var studentFaker = new Bogus.Faker<Student>();
+                    studentFaker.RuleFor(s => s.Name, f => f.Person.FullName)
+                        .RuleFor(s => s.Class, f => f.Random.ListItem(classes))
+                        .RuleFor(s => s.BirthDate, f => f.Person.DateOfBirth)
+                        .RuleFor(s => s.Phone, f => f.Person.Phone)
+                        .RuleFor(s => s.Gender, f => f.Random.Enum<Gender>())
+                        .RuleFor(s => s.EmailAddress, f => f.Person.Email)
+                        .RuleFor(s => s.Adress, f => f.Address.FullAddress())
+                        .RuleFor(s => s.ClassId, (f, s) => s.Class.Id);
 
-            //    Customer cust_2 = new Customer
-            //    {
-            //        Name = "Itachi Uchiha",
-            //        Email = "uchiha@narutoverse.com",
-            //        PhoneNumber = "+81123456789",
-            //        Address = "Some fictional Address, Street 123, Konoha",
-            //        City = "Konoha",
-            //        Gender = Gender.Male,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
+                    Student student = studentFaker.Generate();
+                    _context.Studnets.Add(student);
+                }
 
-            //    Customer cust_3 = new Customer
-            //    {
-            //        Name = "John Doe",
-            //        Email = "johndoe@anonymous.com",
-            //        PhoneNumber = "+18585858",
-            //        Address = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
-            //        Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet",
-            //        City = "Lorem Ipsum",
-            //        Gender = Gender.Male,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
+                await _context.SaveChangesAsync();
 
-            //    Customer cust_4 = new Customer
-            //    {
-            //        Name = "Jane Doe",
-            //        Email = "Janedoe@anonymous.com",
-            //        PhoneNumber = "+18585858",
-            //        Address = @"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.
-            //        Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet",
-            //        City = "Lorem Ipsum",
-            //        Gender = Gender.Male,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
+                _logger.LogInformation("Seeding demo data completed"); 
+            }
+           
 
 
 
-            //    ProductCategory prodCat_1 = new ProductCategory
-            //    {
-            //        Name = "None",
-            //        Description = "Default category. Products that have not been assigned a category",
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
 
-
-
-            //    Product prod_1 = new Product
-            //    {
-            //        Name = "BMW M6",
-            //        Description = "Yet another masterpiece from the world's best car manufacturer",
-            //        BuyingPrice = 109775,
-            //        SellingPrice = 114234,
-            //        UnitsInStock = 12,
-            //        IsActive = true,
-            //        ProductCategory = prodCat_1,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
-
-            //    Product prod_2 = new Product
-            //    {
-            //        Name = "Nissan Patrol",
-            //        Description = "A true man's choice",
-            //        BuyingPrice = 78990,
-            //        SellingPrice = 86990,
-            //        UnitsInStock = 4,
-            //        IsActive = true,
-            //        ProductCategory = prodCat_1,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow
-            //    };
-
-
-
-            //    Order ordr_1 = new Order
-            //    {
-            //        Discount = 500,
-            //        Cashier = await _context.Users.OrderBy(u => u.UserName).FirstAsync(),
-            //        Customer = cust_1,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow,
-            //        OrderDetails = new List<OrderDetail>()
-            //        {
-            //            new OrderDetail() {UnitPrice = prod_1.SellingPrice, Quantity=1, Product = prod_1 },
-            //            new OrderDetail() {UnitPrice = prod_2.SellingPrice, Quantity=1, Product = prod_2 },
-            //        }
-            //    };
-
-            //    Order ordr_2 = new Order
-            //    {
-            //        Cashier = await _context.Users.OrderBy(u => u.UserName).FirstAsync(),
-            //        Customer = cust_2,
-            //        DateCreated = DateTime.UtcNow,
-            //        DateModified = DateTime.UtcNow,
-            //        OrderDetails = new List<OrderDetail>()
-            //        {
-            //            new OrderDetail() {UnitPrice = prod_2.SellingPrice, Quantity=1, Product = prod_2 },
-            //        }
-            //    };
-
-
-            //    _context.Customers.Add(cust_1);
-            //    _context.Customers.Add(cust_2);
-            //    _context.Customers.Add(cust_3);
-            //    _context.Customers.Add(cust_4);
-
-            //    _context.Products.Add(prod_1);
-            //    _context.Products.Add(prod_2);
-
-            //    _context.Orders.Add(ordr_1);
-            //    _context.Orders.Add(ordr_2);
-
-            //    await _context.SaveChangesAsync();
-
-            //    _logger.LogInformation("Seeding demo data completed");
-            //}
         }
 
     }

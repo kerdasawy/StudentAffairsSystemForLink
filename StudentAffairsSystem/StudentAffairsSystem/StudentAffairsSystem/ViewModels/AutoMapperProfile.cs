@@ -56,7 +56,7 @@ namespace StudentAffairsSystem.ViewModels
                 .ConvertUsing(s => (PermissionViewModel)ApplicationPermissions.GetPermissionByValue(s.ClaimValue));
 
             CreateMap<Student, StudentFormViewModel>()
-                .ForMember(s => s.Id, map => map.MapFrom(ss => ss.StudnetId))
+                .ForMember(s => s.Id, map => map.MapFrom(ss => ss.Id))
                 .ForMember(s => s.Class, map => map.MapFrom(ss => ss.Class.Name))
                 .ForMember(s => s.Gender, map => map.MapFrom(ss => ss.Gender.ToString()))
                 .ReverseMap();

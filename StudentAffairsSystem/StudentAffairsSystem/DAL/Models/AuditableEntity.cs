@@ -15,6 +15,7 @@ namespace DAL.Models
     public class AuditableEntity : IAuditableEntity
     {
          
+       [Key]
         public Guid Id { get; set; }= Guid.NewGuid();
 
         [MaxLength(256)]

@@ -13,8 +13,7 @@ namespace DAL.Models
     [Table(nameof(Class))]
     public class Class : AuditableEntity
     {
-        [Key]
-        public Guid ClassId { get; set; }
+        
         public string Name { get; set; }
 
         public virtual HashSet<Student> Students { get; set; }

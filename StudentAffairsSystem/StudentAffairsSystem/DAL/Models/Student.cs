@@ -14,8 +14,7 @@ namespace DAL.Models
     [Table(nameof(Student))]
     public class Student : AuditableEntity
     {
-        [Key]
-        public Guid StudnetId { get; set; }
+       
         public Gender Gender { get; set; }
         [MaxLength(256)]
         public string Name { get; set; }

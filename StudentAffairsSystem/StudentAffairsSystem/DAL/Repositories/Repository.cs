@@ -67,7 +67,7 @@ namespace DAL.Repositories
         }
 
 
-        public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
+        public virtual IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
             return _entities.Where(predicate);
         }
