@@ -21,6 +21,8 @@ namespace DAL
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public string CurrentUserId { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<Student> Studnets { get; set; }
         //public DbSet<Customer> Customers { get; set; }
         //public DbSet<ProductCategory> ProductCategories { get; set; }
         //public DbSet<Product> Products { get; set; }
@@ -38,12 +40,23 @@ namespace DAL
             base.OnModelCreating(builder);
             const string priceDecimalType = "decimal(18,2)";
 
+            #region User Management
             builder.Entity<ApplicationUser>().HasMany(u => u.Claims).WithOne().HasForeignKey(c => c.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<ApplicationUser>().HasMany(u => u.Roles).WithOne().HasForeignKey(r => r.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ApplicationRole>().HasMany(r => r.Claims).WithOne().HasForeignKey(c => c.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<ApplicationRole>().HasMany(r => r.Users).WithOne().HasForeignKey(r => r.RoleId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            #endregion
 
+
+            #region Student Affairs System
+
+            builder.Entity<Class>().HasKey(c => c.ClassId);
+            builder.Entity<Student>().HasKey(s => s.StudnetId);
+            builder.Entity<Student>().HasOne(s => s.Class).WithMany(c=>c.Students).HasForeignKey(s=>s.ClassId).OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Student>().Navigation(s => s.Class).AutoInclude();
+
+            #endregion
             //builder.Entity<Customer>().Property(c => c.Name).IsRequired().HasMaxLength(100);
             //builder.Entity<Customer>().HasIndex(c => c.Name);
             //builder.Entity<Customer>().Property(c => c.Email).HasMaxLength(100);
