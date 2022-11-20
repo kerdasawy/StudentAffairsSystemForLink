@@ -63,6 +63,8 @@ import { RolesManagementComponent } from './components/controls/roles-management
 import { RoleEditorComponent } from './components/controls/role-editor.component';
 import { StudentListComponent } from './components/Students/student-list/student-list.component';
 import { AddStudentComponent } from './components/Students/add-student/add-student.component';
+import { StudentEndpoint } from './services/StudentEndpoint';
+import { StudentServiceService } from './services/student-service.service';
 
 
 @NgModule({
@@ -124,7 +126,7 @@ import { AddStudentComponent } from './components/Students/add-student/add-stude
     AccountService,
     AccountEndpoint,
     LocalStoreManager,
-    OidcHelperService
+    OidcHelperService,StudentServiceService,StudentEndpoint
   ],
   bootstrap: [AppComponent]
 })

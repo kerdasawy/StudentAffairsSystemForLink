@@ -20,7 +20,7 @@ using System.Linq;
 namespace StudentAffairsSystem.Controllers
 {
     [Route("api/[controller]")]
-    public class StuentController : ControllerBase
+    public class StudentController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -28,7 +28,7 @@ namespace StudentAffairsSystem.Controllers
         private readonly IEmailSender _emailSender;
 
 
-        public StuentController(IMapper mapper, IUnitOfWork unitOfWork, ILogger<CustomerController> logger, IEmailSender emailSender)
+        public StudentController(IMapper mapper, IUnitOfWork unitOfWork, ILogger<CustomerController> logger, IEmailSender emailSender)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -43,7 +43,9 @@ namespace StudentAffairsSystem.Controllers
             {
                   
             }
+
             var studentModel = this._mapper.Map<Student>(studentViewModel);
+
             this._unitOfWork.Stuents.Add(studentModel);
             this._unitOfWork.SaveChanges();
 
@@ -51,27 +53,27 @@ namespace StudentAffairsSystem.Controllers
             
         }
 
-        [HttpGet("StudentList")]
+        //[HttpGet("StudentList")]
 
-        public IActionResult StudentList()
-        {
+        //public IActionResult StudentList()
+        //{
 
-            return StudentList(-1, -1,null);
-        }
-        [HttpGet("StudentList/{pageNumber:int}/{pageSize:int}/{classNameFilter:string}")]
+        //    return StudentList(-1, -1,null);
+        //}
+        [HttpGet("StudentList/{pageNumber:int}/{pageSize:int}/{classNameFilter?}")]
 
         public IActionResult StudentList(int pageNumber, int pageSize, string classNameFilter =null)
         {
             IQueryable<Student> StudentQuery = null; ;
             if (classNameFilter != null)
-                StudentQuery = this._unitOfWork.Stuents.Find(x => !x.IsDeleted& x.Class.Name == classNameFilter);
+                StudentQuery = this._unitOfWork.Stuents.Find(x => !x.IsDeleted&& x.Class.Name == classNameFilter).OrderBy(x=>x.Name);
             else
             {
-                StudentQuery = this._unitOfWork.Stuents.Find(x=>!x.IsDeleted);
+                StudentQuery = this._unitOfWork.Stuents.Find(x=>!x.IsDeleted).OrderBy(x => x.Name);
             }
             if (pageNumber > 0 && pageSize > 0)
             {
-                StudentQuery = StudentQuery.Skip(pageNumber * pageSize).Take(pageSize);
+                StudentQuery = StudentQuery.Skip((pageNumber-1) * pageSize).Take(pageSize);
 
             }
             var listResult = StudentQuery.ToList().Select(s=>this._mapper.Map<StudentListItemViewModel>(s)).ToList();
@@ -89,8 +91,12 @@ namespace StudentAffairsSystem.Controllers
         {
            var student =  this._unitOfWork.Stuents.Find(x=>x.Id == StudentId).FirstOrDefault();
 
-            if (student != null && !student.IsDeleted) { 
-                student.IsDeleted = true; 
+            if (student != null && !student.IsDeleted) {
+                {
+                    student.IsDeleted = true; 
+                    this._unitOfWork.SaveChanges();
+                
+                }
             
             return Ok(StudentId);
             
