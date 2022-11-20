@@ -17,6 +17,7 @@
   </div>
 
   <ngx-datatable class="material colored-header sm table-x table-striped table-hover"
+  
                  [loadingIndicator]="loadingIndicator"
                  [rows]="rows"
                  [rowHeight]="35"
@@ -26,10 +27,16 @@
                  [scrollbarV]="true"
                  [columnMode]="'force'">
   </ngx-datatable>
-
+  <pagination [boundaryLinks]="showBoundaryLinks" 
+  [directionLinks]="showDirectionLinks" 
+  [totalItems]="totoalCount"
+  [itemsPerPage]="pageSize"
+  (pageChanged)="pageChanged($event)"></pagination>
   <ng-template #indexTemplate let-value="value">
     <strong>{{value}}</strong>
   </ng-template>
+
+ 
 
   <ng-template #userNameTemplate let-row="row" let-value="value">
     <span [class.locked-out]="row.isLockedOut" [class.user-disabled]="!row.isEnabled">

@@ -65,7 +65,7 @@ import { StudentListComponent } from './components/Students/student-list/student
 import { AddStudentComponent } from './components/Students/add-student/add-student.component';
 import { StudentEndpoint } from './services/StudentEndpoint';
 import { StudentServiceService } from './services/student-service.service';
-
+import { PaginationModule,PaginationConfig } from 'ngx-bootstrap/pagination';
 
 @NgModule({
   declarations: [
@@ -97,6 +97,7 @@ import { StudentServiceService } from './services/student-service.service';
     FormsModule,
     DragDropModule,
     AppRoutingModule,
+    PaginationModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -126,7 +127,7 @@ import { StudentServiceService } from './services/student-service.service';
     AccountService,
     AccountEndpoint,
     LocalStoreManager,
-    OidcHelperService,StudentServiceService,StudentEndpoint
+    OidcHelperService,StudentServiceService,StudentEndpoint,PaginationConfig
   ],
   bootstrap: [AppComponent]
 })

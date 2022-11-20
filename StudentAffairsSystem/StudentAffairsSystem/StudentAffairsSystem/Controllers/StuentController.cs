@@ -71,6 +71,7 @@ namespace StudentAffairsSystem.Controllers
             {
                 StudentQuery = this._unitOfWork.Stuents.Find(x=>!x.IsDeleted).OrderBy(x => x.Name);
             }
+            var totalCount = StudentQuery.Count();
             if (pageNumber > 0 && pageSize > 0)
             {
                 StudentQuery = StudentQuery.Skip((pageNumber-1) * pageSize).Take(pageSize);
@@ -81,7 +82,7 @@ namespace StudentAffairsSystem.Controllers
             Items = listResult,
             PageNumber = pageNumber,
             PageSize = pageSize,
-            TotalCount = listResult.Count
+            TotalCount = totalCount
             };
             return Ok(StudentList);
         }

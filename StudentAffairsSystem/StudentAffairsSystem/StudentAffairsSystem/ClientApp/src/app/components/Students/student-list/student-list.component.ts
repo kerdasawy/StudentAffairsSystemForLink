@@ -1,5 +1,6 @@
-import { Component, OnInit, AfterViewInit, TemplateRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, TemplateRef, ViewChild, Input, ChangeDetectorRef } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 import { Permission } from 'src/app/models/permission.model';
 import { Role } from 'src/app/models/role.model';
 import { StudentListItemViewModel } from 'src/app/models/StudentListItemViewModel';
@@ -35,7 +36,10 @@ export class StudentListComponent implements OnInit, AfterViewInit  {
   public pageNumber:number =1
   public pageSize = 10;
   public classNameFilter:string =null;
-  public totoalCount = 0;
+  public totoalCount = 30;
+   
+  showBoundaryLinks: boolean = true;
+   showDirectionLinks: boolean = true;
 
   @ViewChild('indexTemplate', { static: true })
   indexTemplate: TemplateRef<any>;
@@ -57,7 +61,7 @@ export class StudentListComponent implements OnInit, AfterViewInit  {
 
   constructor(private alertService: AlertService,
     private studentService:StudentServiceService,
-    private translationService: AppTranslationService, private accountService: AccountService) {
+    private translationService: AppTranslationService, private accountService: AccountService,private cdRef:ChangeDetectorRef) {
   }
 
 
@@ -147,15 +151,20 @@ loadDataPage(pageNumber:number, pageSize:number , classname:string)
 {
   this.alertService.startLoadingMessage();
   this.loadingIndicator = true;
+  this.pageNumber = pageNumber;
+  this.pageSize = pageSize;
+  this.classNameFilter = classname;
+  this.cdRef.detectChanges();
   var loadStudentSub= this.studentService.getStudentList(pageNumber, pageSize , classname).subscribe(
 
     res=>{
       this.alertService.stopLoadingMessage();
       this.loadingIndicator = false;
       res.items.forEach((student, index) => {
-        (student as any).index = index + 1;
+        (student as any).index = index + (this.pageNumber-1)*this.pageSize +1 ;
       });
-  
+
+      this.totoalCount = res.totalCount;
       this.rowsCache = [...res.items];
       this.rows = res.items;
     }
@@ -187,7 +196,8 @@ loadDataPage(pageNumber:number, pageSize:number , classname:string)
 
   onSearchChanged(value: string) {
   this.classNameFilter = value;
-  this.loadDataPage(this.pageNumber,this.pageSize,this.classNameFilter);
+ 
+  this.loadDataPage(1,this.pageSize,this.classNameFilter);
   }
 
   onEditorModalHidden() {
@@ -268,4 +278,9 @@ let seleteStudentsub = this.studentService.deleteStudent(row.id).subscribe(res=>
   get canManageUsers() {
     return this.accountService.userHasPermission(Permission.manageUsersPermission);
   }
+
+public pageChanged(event: PageChangedEvent)
+{
+  this.loadDataPage(event.page, event.itemsPerPage,this.classNameFilter)
+}
 }
