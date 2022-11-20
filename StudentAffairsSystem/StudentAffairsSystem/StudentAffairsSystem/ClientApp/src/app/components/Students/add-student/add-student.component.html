@@ -1,6 +1,15 @@
 <div>
-    <form *ngIf="formResetToggle" [attr.autocomplete]="isGeneralEditor ? 'NaN' : null" name="userInfoForm" #f="ngForm" novalidate
-          (ngSubmit)="save()"
+    <form *ngIf="formResetToggle" [attr.autocomplete]="isGeneralEditor ? 'NaN' : null" name="userInfoForm" #f="ngForm"  
+          (ngSubmit)=" f.form.valid ? save() :
+
+          (!name.valid && showErrorAlert('User name is required', 'Please enter a Student name (minimum of 2 and maximum of 200 characters)'));
+
+ 
+
+          (emailAddress.errors?.required && showErrorAlert('Email is required', 'Please enter an email address (maximum of 200 characters)'));
+          (emailAddress.errors?.pattern && showErrorAlert('Invalid Email', 'Please enter a valid email address'));
+
+        "
   
            >
   
@@ -10,7 +19,7 @@
                   <p class="form-control-plaintext">{{student.name}}</p>
                 </div>
                 <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                  <input appAutofocus type="text" attr.id="name-{{uniqueId}}" name="name" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.name" />
+                  <input appAutofocus type="text" attr.id="name-{{uniqueId}}"   required maxlength="200"  name="name" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.name" />
                 </div>
               </div>
 
@@ -26,7 +35,7 @@
                 </div>
                 <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
                
-                  <select attr.id="gender-{{uniqueId}}" name="gender" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.gender">
+                  <select attr.id="gender-{{uniqueId}}" name="gender" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.gender"  required >
                  <option>Male</option>
                  <option>Female</option>
                   </select>
@@ -45,7 +54,7 @@
                       <p class="form-control-plaintext">{{student.name}}</p>
                     </div>
                     <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <input appAutofocus type="text" attr.id="adress-{{uniqueId}}" name="adress" placeholder="Enter Student Address" class="form-control" [(ngModel)]="student.adress" />
+                      <input appAutofocus type="text" attr.id="adress-{{uniqueId}}" name="adress" placeholder="Enter Student Address" class="form-control" [(ngModel)]="student.adress"  required maxlength="500"   />
                     </div>
                   </div>
 
@@ -62,7 +71,7 @@
                       <p class="form-control-plaintext">{{student.phone}}</p>
                     </div>
                     <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <input appAutofocus type="text" attr.id="phone-{{uniqueId}}" name="phone" placeholder="Enter Student Phone" class="form-control" [(ngModel)]="student.phone" />
+                      <input appAutofocus type="text" attr.id="phone-{{uniqueId}}" name="phone" placeholder="Enter Student Phone" class="form-control" [(ngModel)]="student.phone"   required maxlength="20" />
                     </div>
 
                     <div class="row">
@@ -78,7 +87,7 @@
                           <p class="form-control-plaintext">{{student.birthDate}}</p>
                         </div>
                         <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <input appAutofocus type="date" attr.id="birthDate-{{uniqueId}}" name="birthDate" placeholder="Enter Student birthDate" class="form-control" [(ngModel)]="student.birthDate" />
+                          <input appAutofocus type="date" attr.id="birthDate-{{uniqueId}}" name="birthDate" placeholder="Enter Student birthDate" class="form-control" [ngModel]="student.birthDate | date:'yyyy-MM-dd'"  (ngModelChange)="student.birthDate = $event" required />
                         </div>
                     </div>
     <div class="row">
@@ -94,7 +103,7 @@
                           <p class="form-control-plaintext">{{student.emailAddress}}</p>
                         </div>
                         <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <input appAutofocus type="email" attr.id="emailAddress-{{uniqueId}}" name="emailAddress" placeholder="Enter Student Email Address" class="form-control" [(ngModel)]="student.emailAddress" />
+                          <input appAutofocus type="email" attr.id="emailAddress-{{uniqueId}}" name="emailAddress" placeholder="Enter Student Email Address" class="form-control" [(ngModel)]="student.emailAddress"  required maxlength="200" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" />
                         </div>
                     </div>
 
@@ -112,7 +121,7 @@
                           <p class="form-control-plaintext">{{student.classId}}</p>
                         </div>
                         <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <select attr.id="classId-{{uniqueId}}" name="classId" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.classId"
+                          <select attr.id="classId-{{uniqueId}}" name="classId" class="form-control" [(ngModel)]="student.classId" required
                           >
 
                               
@@ -136,7 +145,7 @@
           <div ngPreserveWhitespaces class="float-end">
             
             <button  type="button" (click)="cancel()" class="btn btn-danger" [disabled]="isSaving"><i class='fa fa-times'></i> {{'users.editor.Cancel' | translate}}</button>
-            <button type="submit" class="btn btn-primary" [disabled]="isSaving">
+            <button type="submit" class="btn btn-primary" [disabled]="isSaving || !f.form.valid">
               <i *ngIf="!isSaving" class='fa fa-save'></i><i *ngIf="isSaving" class='fa fa-circle-o-notch fa-spin'></i> {{isSaving ? ('users.editor.Saving' | translate) : ('users.editor.Save' | translate)}}
             </button>
           </div>

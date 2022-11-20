@@ -115,7 +115,7 @@ namespace StudentAffairsSystem.Controllers
         [HttpGet("ClassList")]
         public IActionResult ClassList()
         {
-            var classListViewModel = _unitOfWork.Classes.GetAll().Select(x=> _mapper.Map<ClassViewModel>( x)).ToList();
+            var classListViewModel = _unitOfWork.Classes.GetAll().Select(x=> _mapper.Map<ClassViewModel>( x)).OrderBy(x=>x.Name).ToList();
             return Ok(classListViewModel);
         }
     }

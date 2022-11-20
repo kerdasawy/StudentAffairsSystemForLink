@@ -158,7 +158,14 @@ export class AddStudentComponent implements OnInit{
     var saveSub= this.studentService.postNewStudent(this.student).subscribe(res =>{
       this.isSaving = false;
       this.alertService.stopLoadingMessage();
-     
+ 
+    this.isChangePassword = false;
+    this.showValidationErrors = false;
+
+    // this.deletePasswordFromUser(this.userEdit);
+    Object.assign(this.student, this.userEdit);
+    this.userEdit = new StudentEditor();
+    this.resetForm();
     });
     // if (this.isNewUser) {
     //   this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(user), error => this.saveFailedHelper(error));

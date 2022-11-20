@@ -204,6 +204,7 @@ export class StudentListComponent implements OnInit, AfterViewInit {
   onEditorModalHidden() {
     this.editingUserName = null;
     this.StudentEditor.resetForm(true);
+    this.loadDataPage(1,this.pageSize,this.classNameFilter)
   }
 
 
@@ -217,6 +218,7 @@ export class StudentListComponent implements OnInit, AfterViewInit {
 
         this.classList = res;
         this.editedStudent = new StudentEditor();
+        this.editedStudent.classId = this.classList[0].id
         this.editedStudent.classList = this.classList;
         this.StudentEditor.student = this.editedStudent;
         debugger;;
@@ -226,6 +228,7 @@ export class StudentListComponent implements OnInit, AfterViewInit {
     else {
 
       this.editedStudent = new StudentEditor();
+      this.editedStudent.classId = this.classList[0].id
       this.editedStudent.classList = this.classList;
       this.editorModal.show();
     }
