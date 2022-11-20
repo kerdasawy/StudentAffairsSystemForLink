@@ -34,6 +34,7 @@ export class StudentEditor implements StudentEditor
  constructor()
  {
      this.id = Guid.create().toString();
+     this.emailAddress = '';
  }
  
 }

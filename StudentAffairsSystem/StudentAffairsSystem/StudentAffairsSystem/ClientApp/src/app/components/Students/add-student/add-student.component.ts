@@ -1,3 +1,4 @@
+import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Permission } from 'src/app/models/permission.model';
 import { Role } from 'src/app/models/role.model';
@@ -78,23 +79,12 @@ export class AddStudentComponent implements OnInit{
   }
 
   ngOnInit() {
-    if (!this.isGeneralEditor) {
-      this.loadCurrentUserData();
-    }
+    
   }
 
 
 
-  private loadCurrentUserData() {
-    this.alertService.startLoadingMessage();
-
-    if (this.canViewAllRoles) {
-      this.accountService.getUserAndRoles().subscribe(results => this.onCurrentUserDataLoadSuccessful(results[0], results[1]), error => this.onCurrentUserDataLoadFailed(error));
-    } else {
-      this.accountService.getUser().subscribe(user => this.onCurrentUserDataLoadSuccessful(user, user.roles.map(x => new Role(x))), error => this.onCurrentUserDataLoadFailed(error));
-    }
-  }
-
+   
 
   private onCurrentUserDataLoadSuccessful(user: User, roles: Role[]) {
     // this.alertService.stopLoadingMessage();
@@ -160,13 +150,15 @@ export class AddStudentComponent implements OnInit{
       this.alertService.stopLoadingMessage();
  
     this.isChangePassword = false;
-    this.showValidationErrors = false;
-
-    // this.deletePasswordFromUser(this.userEdit);
+    this.showValidationErrors = true; 
+    let classlist =  this.student.classList
     Object.assign(this.student, this.userEdit);
     this.userEdit = new StudentEditor();
+    this.userEdit.classList = classlist;
+   
     this.resetForm();
     });
+    
     // if (this.isNewUser) {
     //   this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(user), error => this.saveFailedHelper(error));
     // } else {
@@ -201,10 +193,7 @@ export class AddStudentComponent implements OnInit{
       // }
     }
 
-    if (this.isEditingSelf) {
-      this.alertService.showMessage('Success', 'Changes to your User Profile was saved successfully', MessageSeverity.success);
-      this.refreshLoggedInUser();
-    }
+    
 
     this.isEditMode = false;
 
@@ -278,16 +267,7 @@ export class AddStudentComponent implements OnInit{
 
 
 
-  private refreshLoggedInUser() {
-    this.accountService.refreshLoggedInUser()
-      .subscribe(user => {
-        this.loadCurrentUserData();
-      },
-        error => {
-          this.alertService.resetStickyMessage();
-          this.alertService.showStickyMessage('Refresh failed', 'An error occured whilst refreshing logged in user information from the server', MessageSeverity.error, error);
-        });
-  }
+ 
 
 
   changePassword() {

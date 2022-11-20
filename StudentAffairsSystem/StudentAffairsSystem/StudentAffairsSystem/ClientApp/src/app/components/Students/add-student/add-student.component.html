@@ -1,15 +1,15 @@
 <div>
-    <form *ngIf="formResetToggle" [attr.autocomplete]="isGeneralEditor ? 'NaN' : null" name="userInfoForm" #f="ngForm"  
-          (ngSubmit)=" f.form.valid ? save() :
+    <form   *ngIf="formResetToggle" [attr.autocomplete]="isGeneralEditor ? 'NaN' : null"   name="userInfoForm" #f="ngForm"  
+          (ngSubmit)=" f.form.valid?save():
+          
+          (stundetName&&stundetName.errors?.required && showErrorAlert('Student name is required', 'Please enter a Studnet name (minimum of 2 and maximum of 200 characters)'));
 
-          (!name.valid && showErrorAlert('User name is required', 'Please enter a Student name (minimum of 2 and maximum of 200 characters)'));
+           
 
- 
+          (emailAddress&&emailAddress.errors?.required && showErrorAlert('Email is required', 'Please enter an email address (maximum of 200 characters)'));
+          (emailAddress&&emailAddress.errors?.pattern && showErrorAlert('Invalid Email', 'Please enter a valid email address'));
 
-          (emailAddress.errors?.required && showErrorAlert('Email is required', 'Please enter an email address (maximum of 200 characters)'));
-          (emailAddress.errors?.pattern && showErrorAlert('Invalid Email', 'Please enter a valid email address'));
-
-        "
+          "
   
            >
   
@@ -19,7 +19,7 @@
                   <p class="form-control-plaintext">{{student.name}}</p>
                 </div>
                 <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                  <input appAutofocus type="text" attr.id="name-{{uniqueId}}"   required maxlength="200"  name="name" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.name" />
+                  <input   #stundetName   type="text" attr.id="name-{{uniqueId}}"   required maxlength="200"  name="stundetName" placeholder="Enter Student name" class="form-control" [(ngModel)]="student.name" />
                 </div>
               </div>
 
@@ -41,111 +41,120 @@
                   </select>
                 </div>
               
-                <div class="row">
-                    <div class="col-lg-12">
-                      <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-                    </div>
-                  </div>
-
-
-                <div class="row">
-                    <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="adress-{{uniqueId}}">Address</label>
-                    <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <p class="form-control-plaintext">{{student.name}}</p>
-                    </div>
-                    <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <input appAutofocus type="text" attr.id="adress-{{uniqueId}}" name="adress" placeholder="Enter Student Address" class="form-control" [(ngModel)]="student.adress"  required maxlength="500"   />
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-                    </div>
-                  </div>
-
-
-                  <div class="row">
-                    <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="phone-{{uniqueId}}">Phone</label>
-                    <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <p class="form-control-plaintext">{{student.phone}}</p>
-                    </div>
-                    <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                      <input appAutofocus type="text" attr.id="phone-{{uniqueId}}" name="phone" placeholder="Enter Student Phone" class="form-control" [(ngModel)]="student.phone"   required maxlength="20" />
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-                        </div>
-                      </div>
-
-
-                    <div class="row">
-                        <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="birthDate-{{uniqueId}}">Birth Date</label>
-                        <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <p class="form-control-plaintext">{{student.birthDate}}</p>
-                        </div>
-                        <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <input appAutofocus type="date" attr.id="birthDate-{{uniqueId}}" name="birthDate" placeholder="Enter Student birthDate" class="form-control" [ngModel]="student.birthDate | date:'yyyy-MM-dd'"  (ngModelChange)="student.birthDate = $event" required />
-                        </div>
-                    </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-      </div>
-    </div>
-
-
-                    <div class="row">
-                        <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="emailAddress-{{uniqueId}}">Email Address</label>
-                        <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <p class="form-control-plaintext">{{student.emailAddress}}</p>
-                        </div>
-                        <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <input appAutofocus type="email" attr.id="emailAddress-{{uniqueId}}" name="emailAddress" placeholder="Enter Student Email Address" class="form-control" [(ngModel)]="student.emailAddress"  required maxlength="200" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" />
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-                        </div>
-                      </div>
-
-
-                    <div class="row">
-                        <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="class-{{uniqueId}}">Class </label>
-                        <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <p class="form-control-plaintext">{{student.classId}}</p>
-                        </div>
-                        <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
-                          <select attr.id="classId-{{uniqueId}}" name="classId" class="form-control" [(ngModel)]="student.classId" required
-                          >
-
-                              
-                          <option *ngFor="let c of student.classList" [ngValue]="c.id">{{c.name}}</option>
-                        </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                          <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
-                        </div>
-                      </div>
-
-                  </div>
             </div>
   
+            <div class="row">
+                <div class="col-lg-12">
+                  <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+                </div>
+              </div>
+
+
+            <div class="row">
+                <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="adress-{{uniqueId}}">Address</label>
+                <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <p class="form-control-plaintext">{{student.name}}</p>
+                </div>
+                <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <input   type="text" attr.id="adress-{{uniqueId}}" name="adress" placeholder="Enter Student Address" class="form-control" [(ngModel)]="student.adress"  required maxlength="500"   />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+                </div>
+              </div>
+
+
+              <div class="row">
+                <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="phone-{{uniqueId}}">Phone</label>
+                <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <p class="form-control-plaintext">{{student.phone}}</p>
+                </div>
+                <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <input   type="text" attr.id="phone-{{uniqueId}}" name="phone" placeholder="Enter Student Phone" class="form-control" [(ngModel)]="student.phone"   required maxlength="20" />
+                </div>
+
+              
+
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+                </div>
+              </div>
+
+
+            <div class="row">
+                <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="birthDate-{{uniqueId}}">Birth Date</label>
+                <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <p class="form-control-plaintext">{{student.birthDate}}</p>
+                </div>
+                <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <input  type="date" attr.id="birthDate-{{uniqueId}}" name="birthDate" placeholder="Enter Student birthDate" class="form-control" [ngModel]="student.birthDate | date:'yyyy-MM-dd'"  (ngModelChange)="student.birthDate = $event" required />
+                </div>
+            </div>
+            <div class="row">
+            <div class="col-lg-12">
+                <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+            </div>
+            </div>
+
+
+            <div class="row">
+                <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="emailAddress-{{uniqueId}}">Email Address</label>
+                <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <p class="form-control-plaintext">{{student.emailAddress}}</p>
+                </div>
+                <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <input    #emailAddress type="text" attr.id="emailAddress-{{uniqueId}}" name="emailAddress" placeholder="Enter Student Email Address" class="form-control" [(ngModel)]="student.emailAddress"  required maxlength="200" pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" />
+
+                  <span *ngIf="showValidationErrors && f.submitted && emailAddress.errors?.required" class="invalid-feedback">
+                    {{'users.editor.EmailRequired' | translate}}
+                  </span>
+                  <span *ngIf="showValidationErrors && f.submitted && emailAddress.errors?.pattern" class="invalid-feedback">
+                    {{'users.editor.InvalidEmail' | translate}}
+                  </span>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                  <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+                </div>
+              </div>
+
+
+            <div class="row">
+                <label [class.col-lg-3]="isViewOnly" [class.col-lg-2]="!isViewOnly" class="col-form-label" for="class-{{uniqueId}}">Class </label>
+                <div *ngIf="!isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <p class="form-control-plaintext">{{student.classId}}</p>
+                </div>
+                <div *ngIf="isEditMode" [class.col-lg-9]="isViewOnly" [class.col-lg-10]="!isViewOnly">
+                  <select attr.id="classId-{{uniqueId}}" name="classId" class="form-control" [(ngModel)]="student.classId" required
+                  >
+
+                      
+                  <option *ngFor="let c of student.classList" [ngValue]="c.id">{{c.name}}</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                  <hr class="hr-separator" [class.info-separator]="!isEditMode" [class.edit-separator]="isEditMode" />
+                </div>
+              </div>
       <div *ngIf="!isViewOnly" class="row">
       
         <div class="col-sm-7">
           <div ngPreserveWhitespaces class="float-end">
             
             <button  type="button" (click)="cancel()" class="btn btn-danger" [disabled]="isSaving"><i class='fa fa-times'></i> {{'users.editor.Cancel' | translate}}</button>
-            <button type="submit" class="btn btn-primary" [disabled]="isSaving || !f.form.valid">
+            <button type="submit" class="btn btn-primary" [disabled]="isSaving ">
               <i *ngIf="!isSaving" class='fa fa-save'></i><i *ngIf="isSaving" class='fa fa-circle-o-notch fa-spin'></i> {{isSaving ? ('users.editor.Saving' | translate) : ('users.editor.Save' | translate)}}
             </button>
           </div>
