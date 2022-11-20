@@ -118,5 +118,14 @@ namespace StudentAffairsSystem.Controllers
             var classListViewModel = _unitOfWork.Classes.GetAll().Select(x=> _mapper.Map<ClassViewModel>( x)).OrderBy(x=>x.Name).ToList();
             return Ok(classListViewModel);
         }
+        [HttpGet("ClassStudentList")]
+        public IActionResult ClassStudentList(Guid ClassId)
+        {
+            IQueryable<Student> StudentQuery = this._unitOfWork.Stuents.Find(x => !x.IsDeleted && x.Class.Id == ClassId).OrderBy(x => x.Name); 
+            
+            var listResult = StudentQuery.ToList().Select(s => this._mapper.Map<StudentListItemViewModel>(s)).ToList();
+            
+            return Ok(listResult);
+        }
     }
 }
