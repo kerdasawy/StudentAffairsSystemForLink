@@ -52,7 +52,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { title: 'Settings' } },
   { path: 'about', component: AboutComponent, data: { title: 'About Us' } },
   { path: 'AddStudent', component: AddStudentComponent, data: { title: 'Add Student' } },
-  { path: 'StudentList', component: StudentListComponent, data: { title: 'Student List' } },
+  { path: 'studentlist', component: StudentListComponent, data: { title: 'Student List' } },
   { path: 'home', redirectTo: '/', pathMatch: 'full' },
   { path: '**', component: NotFoundComponent, data: { title: 'Page Not Found' } }
 ];

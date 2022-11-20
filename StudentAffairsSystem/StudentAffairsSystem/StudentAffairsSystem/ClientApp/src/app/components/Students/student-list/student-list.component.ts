@@ -3,6 +3,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 import { Permission } from 'src/app/models/permission.model';
 import { Role } from 'src/app/models/role.model';
+import { ClassViewModel, StudentEditor } from 'src/app/models/StudentFormViewModel';
 import { StudentListItemViewModel } from 'src/app/models/StudentListItemViewModel';
 import { UserEdit } from 'src/app/models/user-edit.model';
 import { User } from 'src/app/models/user.model';
@@ -12,34 +13,35 @@ import { AppTranslationService } from 'src/app/services/app-translation.service'
 import { StudentServiceService } from 'src/app/services/student-service.service';
 import { Utilities } from 'src/app/services/utilities';
 import { UserInfoComponent } from '../../controls/user-info.component';
+import { AddStudentComponent } from '../add-student/add-student.component';
 
- 
+
 
 @Component({
   selector: 'app-student-list',
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.scss']
 })
-export class StudentListComponent implements OnInit, AfterViewInit  {
+export class StudentListComponent implements OnInit, AfterViewInit {
 
   columns: any[] = [];
   rows: StudentListItemViewModel[] = [];
   rowsCache: StudentListItemViewModel[] = [];
-  editedUser: StudentListItemViewModel;
+  editedStudent: StudentEditor;
   sourceUser: StudentListItemViewModel;
   editingUserName: { name: string };
   loadingIndicator: boolean;
-
+  classList: ClassViewModel[] = []
   allRoles: Role[] = [];
 
 
-  public pageNumber:number =1
+  public pageNumber: number = 1
   public pageSize = 10;
-  public classNameFilter:string =null;
+  public classNameFilter: string = null;
   public totoalCount = 30;
-   
+
   showBoundaryLinks: boolean = true;
-   showDirectionLinks: boolean = true;
+  showDirectionLinks: boolean = true;
 
   @ViewChild('indexTemplate', { static: true })
   indexTemplate: TemplateRef<any>;
@@ -57,11 +59,11 @@ export class StudentListComponent implements OnInit, AfterViewInit  {
   editorModal: ModalDirective;
 
   @ViewChild('userEditor', { static: true })
-  userEditor: UserInfoComponent;
+  StudentEditor: AddStudentComponent;
 
   constructor(private alertService: AlertService,
-    private studentService:StudentServiceService,
-    private translationService: AppTranslationService, private accountService: AccountService,private cdRef:ChangeDetectorRef) {
+    private studentService: StudentServiceService,
+    private translationService: AppTranslationService, private accountService: AccountService, private cdRef: ChangeDetectorRef) {
   }
 
 
@@ -71,28 +73,28 @@ export class StudentListComponent implements OnInit, AfterViewInit  {
 
     this.columns = [
       { prop: 'index', name: '#', width: 40, cellTemplate: this.indexTemplate, canAutoResize: false },
-      { prop: 'name', name:'Name', width: 50 },
-      { prop: 'gender', name:  'Gender', width: 90 },
-      { prop: 'class', name:'Class', width: 120 },
-      
-    ];
-    if(this.canManageUsers)
-    this.columns.push({ name: '', width: 160, cellTemplate: this.actionsTemplate, resizeable: false, canAutoResize: false, sortable: false, draggable: false });
-   
+      { prop: 'name', name: 'Name', width: 50 },
+      { prop: 'gender', name: 'Gender', width: 90 },
+      { prop: 'class', name: 'Class', width: 120 },
 
-    this.loadDataPage(this.pageNumber,this.pageSize,this.classNameFilter);
+    ];
+    if (this.canManageUsers)
+      this.columns.push({ name: '', width: 160, cellTemplate: this.actionsTemplate, resizeable: false, canAutoResize: false, sortable: false, draggable: false });
+
+
+    this.loadDataPage(this.pageNumber, this.pageSize, this.classNameFilter);
   }
 
 
   ngAfterViewInit() {
 
-    this.userEditor.changesSavedCallback = () => {
+    this.StudentEditor.changesSavedCallback = () => {
       this.addNewUserToList();
       this.editorModal.hide();
     };
 
-    this.userEditor.changesCancelledCallback = () => {
-      this.editedUser = null;
+    this.StudentEditor.changesCancelledCallback = () => {
+      this.editedStudent = null;
       this.sourceUser = null;
       this.editorModal.hide();
     };
@@ -147,29 +149,28 @@ export class StudentListComponent implements OnInit, AfterViewInit  {
     }
   }
 
-loadDataPage(pageNumber:number, pageSize:number , classname:string)
-{
-  this.alertService.startLoadingMessage();
-  this.loadingIndicator = true;
-  this.pageNumber = pageNumber;
-  this.pageSize = pageSize;
-  this.classNameFilter = classname;
-  this.cdRef.detectChanges();
-  var loadStudentSub= this.studentService.getStudentList(pageNumber, pageSize , classname).subscribe(
+  loadDataPage(pageNumber: number, pageSize: number, classname: string) {
+    this.alertService.startLoadingMessage();
+    this.loadingIndicator = true;
+    this.pageNumber = pageNumber;
+    this.pageSize = pageSize;
+    this.classNameFilter = classname;
+    this.cdRef.detectChanges();
+    var loadStudentSub = this.studentService.getStudentList(pageNumber, pageSize, classname).subscribe(
 
-    res=>{
-      this.alertService.stopLoadingMessage();
-      this.loadingIndicator = false;
-      res.items.forEach((student, index) => {
-        (student as any).index = index + (this.pageNumber-1)*this.pageSize +1 ;
-      });
+      res => {
+        this.alertService.stopLoadingMessage();
+        this.loadingIndicator = false;
+        res.items.forEach((student, index) => {
+          (student as any).index = index + (this.pageNumber - 1) * this.pageSize + 1;
+        });
 
-      this.totoalCount = res.totalCount;
-      this.rowsCache = [...res.items];
-      this.rows = res.items;
-    }
-  )
-}
+        this.totoalCount = res.totalCount;
+        this.rowsCache = [...res.items];
+        this.rows = res.items;
+      }
+    )
+  }
   onDataLoadSuccessful(users: User[], roles: Role[]) {
     // this.alertService.stopLoadingMessage();
     // this.loadingIndicator = false;
@@ -195,22 +196,40 @@ loadDataPage(pageNumber:number, pageSize:number , classname:string)
 
 
   onSearchChanged(value: string) {
-  this.classNameFilter = value;
- 
-  this.loadDataPage(1,this.pageSize,this.classNameFilter);
+    this.classNameFilter = value;
+
+    this.loadDataPage(1, this.pageSize, this.classNameFilter);
   }
 
   onEditorModalHidden() {
     this.editingUserName = null;
-    this.userEditor.resetForm(true);
+    this.StudentEditor.resetForm(true);
   }
 
 
-  newUser() {
-    // this.editingUserName = null;
-    // this.sourceUser = null;
-    // this.editedUser = this.userEditor.newUser(this.allRoles);
-    // this.editorModal.show();
+  newStudent() {
+    this.editingUserName = null;
+    this.sourceUser = null;
+    this.StudentEditor.isEditMode = true;
+    debugger;;
+    if (this.classList.length == 0) {
+      let classSub = this.studentService.getClassList().subscribe(res => {
+
+        this.classList = res;
+        this.editedStudent = new StudentEditor();
+        this.editedStudent.classList = this.classList;
+        this.StudentEditor.student = this.editedStudent;
+        debugger;;
+        this.editorModal.show();
+      });
+    }
+    else {
+
+      this.editedStudent = new StudentEditor();
+      this.editedStudent.classList = this.classList;
+      this.editorModal.show();
+    }
+
   }
 
 
@@ -228,26 +247,26 @@ loadDataPage(pageNumber:number, pageSize:number , classname:string)
 
 
   deleteUserHelper(row: StudentListItemViewModel) {
- 
+
     this.alertService.startLoadingMessage('Deleting...');
     this.loadingIndicator = true;
-let seleteStudentsub = this.studentService.deleteStudent(row.id).subscribe(res=>{
+    let seleteStudentsub = this.studentService.deleteStudent(row.id).subscribe(res => {
 
       this.alertService.stopLoadingMessage();
+      this.loadingIndicator = false;
+
+      this.rowsCache = this.rowsCache.filter(item => item.id !== row.id);
+      this.rows = this.rows.filter(item => item.id !== row.id);
+    },
+      error => {
+        this.alertService.stopLoadingMessage();
         this.loadingIndicator = false;
 
-        this.rowsCache = this.rowsCache.filter(item => item.id !== row.id);
-        this.rows = this.rows.filter(item => item.id !== row.id);
-      },
-        error => {
-          this.alertService.stopLoadingMessage();
-          this.loadingIndicator = false;
+        this.alertService.showStickyMessage('Delete Error', `An error occured whilst deleting the Student.\r\nError: "${Utilities.getHttpResponseMessages(error)}"`,
+          MessageSeverity.error, error);
+      });
 
-          this.alertService.showStickyMessage('Delete Error', `An error occured whilst deleting the Student.\r\nError: "${Utilities.getHttpResponseMessages(error)}"`,
-            MessageSeverity.error, error);
-        });
 
- 
     // this.accountService.deleteUser(row)
     //   .subscribe(results => {
     //     this.alertService.stopLoadingMessage();
@@ -279,8 +298,7 @@ let seleteStudentsub = this.studentService.deleteStudent(row.id).subscribe(res=>
     return this.accountService.userHasPermission(Permission.manageUsersPermission);
   }
 
-public pageChanged(event: PageChangedEvent)
-{
-  this.loadDataPage(event.page, event.itemsPerPage,this.classNameFilter)
-}
+  public pageChanged(event: PageChangedEvent) {
+    this.loadDataPage(event.page, event.itemsPerPage, this.classNameFilter)
+  }
 }

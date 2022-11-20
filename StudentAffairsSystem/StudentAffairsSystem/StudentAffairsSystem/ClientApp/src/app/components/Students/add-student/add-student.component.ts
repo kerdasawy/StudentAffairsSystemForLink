@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Permission } from 'src/app/models/permission.model';
 import { Role } from 'src/app/models/role.model';
+import { StudentEditor, StudentFormViewModel } from 'src/app/models/StudentFormViewModel';
 import { UserEdit } from 'src/app/models/user-edit.model';
 import { User } from 'src/app/models/user.model';
 import { AccountService } from 'src/app/services/account.service';
 import { AlertService, MessageSeverity } from 'src/app/services/alert.service';
+import { StudentServiceService } from 'src/app/services/student-service.service';
 import { Utilities } from 'src/app/services/utilities';
 
  
@@ -24,8 +26,9 @@ export class AddStudentComponent implements OnInit{
   public isEditingSelf = false;
   public showValidationErrors = false;
   public uniqueId: string = Utilities.uniqueId();
-  public user: User = new User();
-  public userEdit: UserEdit;
+  
+  public student: StudentEditor ;
+  public userEdit: StudentEditor;
   public allRoles: Role[] = [];
 
   public formResetToggle = true;
@@ -48,29 +51,30 @@ export class AddStudentComponent implements OnInit{
   public form;
 
   // ViewChilds Required because ngIf hides template variables from global scope
-  @ViewChild('userName')
-  public userName;
+  // @ViewChild('userName')
+  // public userName;
 
-  @ViewChild('userPassword')
-  public userPassword;
+  // @ViewChild('userPassword')
+  // public userPassword;
 
-  @ViewChild('email')
-  public email;
+  // @ViewChild('email')
+  // public email;
 
-  @ViewChild('currentPassword')
-  public currentPassword;
+  // @ViewChild('currentPassword')
+  // public currentPassword;
 
-  @ViewChild('newPassword')
-  public newPassword;
+  // @ViewChild('newPassword')
+  // public newPassword;
 
-  @ViewChild('confirmPassword')
-  public confirmPassword;
+  // @ViewChild('confirmPassword')
+  // public confirmPassword;
 
-  @ViewChild('roles')
-  public roles;
+  // @ViewChild('roles')
+  // public roles;
 
 
-  constructor(private alertService: AlertService, private accountService: AccountService) {
+  constructor(private alertService: AlertService, private accountService: AccountService, private studentService:StudentServiceService) {
+    this.student = new StudentEditor();
   }
 
   ngOnInit() {
@@ -93,17 +97,17 @@ export class AddStudentComponent implements OnInit{
 
 
   private onCurrentUserDataLoadSuccessful(user: User, roles: Role[]) {
-    this.alertService.stopLoadingMessage();
-    this.user = user;
-    this.allRoles = roles;
+    // this.alertService.stopLoadingMessage();
+    // this.student = user;
+    // this.allRoles = roles;
   }
 
   private onCurrentUserDataLoadFailed(error: any) {
-    this.alertService.stopLoadingMessage();
-    this.alertService.showStickyMessage('Load Error', `Unable to retrieve user data from the server.\r\nErrors: "${Utilities.getHttpResponseMessages(error)}"`,
-      MessageSeverity.error, error);
+    // this.alertService.stopLoadingMessage();
+    // this.alertService.showStickyMessage('Load Error', `Unable to retrieve user data from the server.\r\nErrors: "${Utilities.getHttpResponseMessages(error)}"`,
+    //   MessageSeverity.error, error);
 
-    this.user = new User();
+    // this.student = new User();
   }
 
 
@@ -131,11 +135,11 @@ export class AddStudentComponent implements OnInit{
   edit() {
     if (!this.isGeneralEditor) {
       this.isEditingSelf = true;
-      this.userEdit = new UserEdit();
-      Object.assign(this.userEdit, this.user);
+      this.userEdit = new StudentEditor();
+      Object.assign(this.userEdit, this.student);
     } else {
       if (!this.userEdit) {
-        this.userEdit = new UserEdit();
+        this.userEdit = new StudentEditor();
       }
 
       this.isEditingSelf = this.accountService.currentUser ? this.userEdit.id === this.accountService.currentUser.id : false;
@@ -150,39 +154,44 @@ export class AddStudentComponent implements OnInit{
   save() {
     this.isSaving = true;
     this.alertService.startLoadingMessage('Saving changes...');
-
-    if (this.isNewUser) {
-      this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(user), error => this.saveFailedHelper(error));
-    } else {
-      this.accountService.updateUser(this.userEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
-    }
+ 
+    var saveSub= this.studentService.postNewStudent(this.student).subscribe(res =>{
+      this.isSaving = false;
+      this.alertService.stopLoadingMessage();
+     
+    });
+    // if (this.isNewUser) {
+    //   this.accountService.newUser(this.userEdit).subscribe(user => this.saveSuccessHelper(user), error => this.saveFailedHelper(error));
+    // } else {
+    //   this.accountService.updateUser(this.userEdit).subscribe(response => this.saveSuccessHelper(), error => this.saveFailedHelper(error));
+    // }
   }
 
 
   private saveSuccessHelper(user?: User) {
-    this.testIsRoleUserCountChanged(this.user, this.userEdit);
+    // this.testIsRoleUserCountChanged(this.student, this.userEdit);
 
-    if (user) {
-      Object.assign(this.userEdit, user);
-    }
+    // if (user) {
+    //   Object.assign(this.userEdit, user);
+    // }
 
     this.isSaving = false;
     this.alertService.stopLoadingMessage();
     this.isChangePassword = false;
     this.showValidationErrors = false;
 
-    this.deletePasswordFromUser(this.userEdit);
-    Object.assign(this.user, this.userEdit);
-    this.userEdit = new UserEdit();
+    // this.deletePasswordFromUser(this.userEdit);
+    Object.assign(this.student, this.userEdit);
+    this.userEdit = new StudentEditor();
     this.resetForm();
 
 
     if (this.isGeneralEditor) {
-      if (this.isNewUser) {
-        this.alertService.showMessage('Success', `User \"${this.user.userName}\" was created successfully`, MessageSeverity.success);
-      } else if (!this.isEditingSelf) {
-        this.alertService.showMessage('Success', `Changes to user \"${this.user.userName}\" was saved successfully`, MessageSeverity.success);
-      }
+      // if (this.isNewUser) {
+      //   this.alertService.showMessage('Success', `User \"${this.student.userName}\" was created successfully`, MessageSeverity.success);
+      // } else if (!this.isEditingSelf) {
+      //   this.alertService.showMessage('Success', `Changes to user \"${this.student.userName}\" was saved successfully`, MessageSeverity.success);
+      // }
     }
 
     if (this.isEditingSelf) {
@@ -227,11 +236,11 @@ export class AddStudentComponent implements OnInit{
 
 
   cancel() {
-    if (this.isGeneralEditor) {
-      this.userEdit = this.user = new UserEdit();
-    } else {
-      this.userEdit = new UserEdit();
-    }
+    // if (this.isGeneralEditor) {
+    //   this.userEdit = this.student = new UserEdit();
+    // } else {
+    //   this.userEdit = new UserEdit();
+    // }
 
     this.showValidationErrors = false;
     this.resetForm();
@@ -250,7 +259,7 @@ export class AddStudentComponent implements OnInit{
 
 
   close() {
-    this.userEdit = this.user = new UserEdit();
+    // this.userEdit = this.student = new UserEdit();
     this.showValidationErrors = false;
     this.resetForm();
     this.isEditMode = false;
@@ -287,7 +296,7 @@ export class AddStudentComponent implements OnInit{
     this.accountService.unblockUser(this.userEdit.id)
       .subscribe(() => {
         this.isSaving = false;
-        this.userEdit.isLockedOut = false;
+        // this.userEdit.isLockedOut = false;
         this.alertService.stopLoadingMessage();
         this.alertService.showMessage('Success', 'User has been successfully unblocked', MessageSeverity.success);
       },
@@ -320,8 +329,8 @@ export class AddStudentComponent implements OnInit{
     this.isNewUser = true;
 
     this.allRoles = [...allRoles];
-    this.user = this.userEdit = new UserEdit();
-    this.userEdit.isEnabled = true;
+    // this.student = this.userEdit = new UserEdit();
+    // this.userEdit.isEnabled = true;
     this.edit();
 
     return this.userEdit;
@@ -333,9 +342,9 @@ export class AddStudentComponent implements OnInit{
       this.isNewUser = false;
 
       this.setRoles(user, allRoles);
-      this.user = new User();
-      this.userEdit = new UserEdit();
-      Object.assign(this.user, user);
+      // this.student = new User();
+      this.userEdit = new StudentEditor();
+      Object.assign(this.student, user);
       Object.assign(this.userEdit, user);
       this.edit();
 
@@ -348,9 +357,9 @@ export class AddStudentComponent implements OnInit{
 
   displayUser(user: User, allRoles?: Role[]) {
 
-    this.user = new User();
-    Object.assign(this.user, user);
-    this.deletePasswordFromUser(this.user);
+    // this.student = new User();
+    // Object.assign(this.student, user);
+    // this.deletePasswordFromUser(this.student);
     this.setRoles(user, allRoles);
 
     this.isEditMode = false;

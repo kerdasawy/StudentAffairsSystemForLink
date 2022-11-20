@@ -8,6 +8,7 @@ import { map as __map, filter as __filter } from 'rxjs/operators';
 import { ListResponse } from '../models/ListResponse';
 import { StudentListItemViewModel } from '../models/StudentListItemViewModel';
 import { StudentEndpoint } from './StudentEndpoint';
+import { ClassViewModel, StudentEditor, StudentFormViewModel } from '../models/StudentFormViewModel';
  
 
 
@@ -31,5 +32,13 @@ export class StudentServiceService  {
     return this.endpoints.deleteStudentEndPoint<string>(id);
   
  }
- 
+ public postNewStudent(student:StudentFormViewModel):Observable<string>
+ {
+  return this.endpoints.postStudenEndpoint<string>(student);
+ }
+ public getClassList():Observable<ClassViewModel[]>
+ {
+  return this.endpoints.getClassList<ClassViewModel[]>();
+ }
+
 }

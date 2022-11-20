@@ -10,11 +10,12 @@ namespace StudentAffairsSystem.ViewModels
 {
     public class StudentFormViewModel {
        
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string Gender { get; set; }
         [MaxLength(256)]
+        [Required]
         public string Name { get; set; }
-
+        [Required]
         public DateTime BirthDate { get; set; }
         [MaxLength(500)]
         public string Adress { get; set; }
@@ -26,7 +27,7 @@ namespace StudentAffairsSystem.ViewModels
         public string Photo { get; set; }
 
        
-        public Guid ClassId { get; set; }
+        public Guid? ClassId { get; set; }
 
         public string Class { get; set; }
     }

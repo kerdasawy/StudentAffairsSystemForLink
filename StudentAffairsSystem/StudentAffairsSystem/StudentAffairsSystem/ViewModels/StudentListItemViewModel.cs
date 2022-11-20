@@ -24,7 +24,7 @@ namespace StudentAffairsSystem.ViewModels
         public string Class { get; set; }
         public static explicit operator StudentListItemViewModel(Student model)
         {
-            return new StudentListItemViewModel() {  Id = model.Id , Name = model.Name , Class = model.Class.Name , ClassId = model.Id , Gender = model.Gender.ToString() , Photo = model.Photo};
+            return new StudentListItemViewModel() {  Id = model.Id , Name = model.Name , Class = model.Class.Name , ClassId = model.Class.Id , Gender = model.Gender.ToString() , Photo = model.Photo};
         }
 
     }

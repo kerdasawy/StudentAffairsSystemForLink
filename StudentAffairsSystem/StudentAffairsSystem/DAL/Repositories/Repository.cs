@@ -29,7 +29,7 @@ namespace DAL.Repositories
 
         public virtual void Add(TEntity entity)
         {
-            _entities.Add(entity);
+                _entities.Add(entity);
         }
 
         public virtual void AddRange(IEnumerable<TEntity> entities)

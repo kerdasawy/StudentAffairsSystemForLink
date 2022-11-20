@@ -37,19 +37,24 @@ namespace StudentAffairsSystem.Controllers
         }
 
         [HttpPost("CreateStudent")]
-        public  IActionResult CreateStudent(StudentFormViewModel studentViewModel)
+        public IActionResult CreateStudent([FromBody] StudentFormViewModel studentViewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                  
+
+
+                var StudentClass = _unitOfWork.Classes.GetSingleOrDefault(c=>c.Id == studentViewModel.ClassId);
+                var studentModel = this._mapper.Map<Student>(studentViewModel);
+                studentModel.Class = StudentClass;
+                this._unitOfWork.Stuents.Add(studentModel);
+                this._unitOfWork.SaveChanges();
+
+                return Ok();
             }
-
-            var studentModel = this._mapper.Map<Student>(studentViewModel);
-
-            this._unitOfWork.Stuents.Add(studentModel);
-            this._unitOfWork.SaveChanges();
-
-            return Ok();
+            else
+            {
+                return BadRequest();
+            }
             
         }
 
@@ -106,6 +111,12 @@ namespace StudentAffairsSystem.Controllers
             {
                 return NotFound();
             }
+        }
+        [HttpGet("ClassList")]
+        public IActionResult ClassList()
+        {
+            var classListViewModel = _unitOfWork.Classes.GetAll().Select(x=> _mapper.Map<ClassViewModel>( x)).ToList();
+            return Ok(classListViewModel);
         }
     }
 }

@@ -19,6 +19,7 @@ export class StudentEndpoint extends EndpointBase {
   get studentListUrl() { return this.configurations.baseUrl + '/api/student/StudentList'; }
   get postStudentUrl() { return this.configurations.baseUrl + '/api/student/CreateStudent'; }
   get deleteStudent() { return this.configurations.baseUrl + '/api/student/Delete'; }
+  get classListURL() { return this.configurations.baseUrl + '/api/student/ClassList'; }
 
 
 
@@ -38,7 +39,9 @@ export class StudentEndpoint extends EndpointBase {
         return this.handleError(error, () => this.postStudenEndpoint(body));
       }));
   }
-
+getClassList<T>():Observable<T>{
+  return this.http.get<T>(this.classListURL);
+}
   deleteStudentEndPoint<T>(id: string): Observable<T> {
     const endpointUrl = `${this.deleteStudent}/${id}`;
 
